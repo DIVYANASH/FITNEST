@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitNest | Smart Fitness Adviser</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
+
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-icon">✦</span>
+            <span>FitNest</span>
+        </a>
+        <span class="top-label">SMART FITNESS ADVISER</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">YOUR PERSONAL WELLNESS SPACE</p>
+            <h1>Small steps.<br><span>Stronger you.</span></h1>
+            <p class="hero-copy">Understand your BMI and get an estimate of your daily calorie needs.</p>
+        </section>
+
+        <section class="layout">
+            <div class="panel form-panel">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">LET'S GET STARTED</p>
+                        <h2>Your details</h2>
+                    </div>
+                    <span class="heading-icon">⌁</span>
+                </div>
+
+                {% if error %}
+                    <div class="error-message">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" id="fitnessForm">
+                    <label for="name">Your name</label>
+                    <input id="name" type="text" name="name" placeholder="e.g. Rahul" maxlength="60" required>
+
+                    <div class="form-row">
+                        <div>
+                            <label for="age">Age</label>
+                            <input id="age" type="number" name="age" min="1" max="120" placeholder="20" required>
+                        </div>
+                        <div>
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender" required>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div>
+                            <label for="weight">Weight <small>(kg)</small></label>
+                            <input id="weight" type="number" name="weight" min="0.1" step="any" placeholder="65" required>
+                        </div>
+                        <div>
+                            <label for="height">Height <small>(metres)</small></label>
+                            <input id="height" type="number" name="height" min="0.1" step="any" placeholder="1.70" required>
+                        </div>
+                    </div>
+
+                    <label for="activity">Activity level</label>
+                    <select id="activity" name="activity" required>
+                        <option value="1">Sedentary — little or no exercise</option>
+                        <option value="2">Light — exercise 1–3 days/week</option>
+                        <option value="3">Moderate — exercise 3–5 days/week</option>
+                        <option value="4">Heavy — exercise 6–7 days/week</option>
+                    </select>
+
+                    <button class="primary-button" type="submit">
+                        Calculate my results <span>→</span>
+                    </button>
+                    <p class="form-note">Your information is used for this calculation only; this demo does not save it.</p>
+                </form>
+            </div>
+
+            <div class="panel results-panel" id="results">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">YOUR OVERVIEW</p>
+                        <h2>Fitness dashboard</h2>
+                    </div>
+                    <span class="live-dot">● LIVE</span>
+                </div>
+
+                {% if result %}
+                    <div class="hello">Hello, {{ result.name }} <span>✦</span></div>
+
+                    <div class="bmi-card">
+                        <div class="bmi-top">
+                            <div>
+                                <p class="card-label">BODY MASS INDEX</p>
+                                <div class="bmi-number counter" data-value="{{ result.bmi }}" data-decimals="2">0.00</div>
+                            </div>
+                            <div class="bmi-symbol">◎</div>
+                        </div>
+                        <span class="category-pill">{{ result.category }}</span>
+                        <div class="meter"><span id="bmiMeter"></span></div>
+                        <div class="meter-labels"><span>Low</span><span>Standard range</span><span>High</span></div>
+                    </div>
+
+                    <div class="calorie-heading">
+                        <div>
+                            <p class="eyebrow">DAILY ESTIMATES</p>
+                            <h3>Calorie overview</h3>
+                        </div>
+                        <span class="flame">✧</span>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-icon">⚡</span>
+                            <p>BMR</p>
+                            <strong class="counter" data-value="{{ result.bmr }}">0</strong>
+                            <small>kcal / day</small>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-icon">◈</span>
+                            <p>Maintenance</p>
+                            <strong class="counter" data-value="{{ result.maintenance }}">0</strong>
+                            <small>kcal / day</small>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-icon">↗</span>
+                            <p>Weight gain estimate</p>
+                            <strong class="counter" data-value="{{ result.weight_gain }}">0</strong>
+                            <small>kcal / day</small>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-icon">↘</span>
+                            <p>Weight loss estimate</p>
+                            <strong class="counter" data-value="{{ result.weight_loss }}">0</strong>
+                            <small>kcal / day</small>
+                        </div>
+                    </div>
+                    <p class="result-footer">Keep showing up. Progress takes time. ✦</p>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-art">✧</div>
+                        <h3>Your results will appear here</h3>
+                        <p>Fill in your details and calculate your fitness estimates. Your dashboard will update here.</p>
+                        <div class="empty-chips"><span>BMI</span><span>BMR</span><span>Daily calories</span></div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="disclaimer">
+            <strong>A helpful note</strong>
+            <p>BMI and calorie figures are general estimates, not a diagnosis or personalised medical advice. Individual needs can vary. Speak with a qualified health professional for guidance.</p>
+        </section>
+
+        <footer>FITNEST <span>•</span> YOUR HEALTH, YOUR PRIORITY</footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
